@@ -7,48 +7,138 @@
 <html>
 
 {% include head.html %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+<style>
+    #data-table,
+    #data-table th,
+    #data-table td,
+    #data-table input,
+    .dataTables_wrapper {
+        color: #000000;
+    }
+
+    #data-table thead input {
+        width: 100%;
+        padding: 6px 8px;
+        box-sizing: border-box;
+        color: #ad9696;
+        background: #ffffff;
+        border: 1px solid #cccccc;
+        border-radius: 6px;
+    }
+</style>
 
 <body>
 
     {% include header.html %}
 
+    
     <!-- Banner -->
-    <section id="banner" class="major">
+    <section id="banner" class="major" style="color: #111111; padding: 2.5em 0;">
         <div class="inner">
             <header class="major">
-                <h1>{{ page.landing-title }}</h1>
+                <h2>BUCS Fixtures</h2>
             </header>
-            <div class="content">
-                <p style="text-transform: uppercase;">{{ site.description }}</p>
-                <ul class="actions">
-                    <li><a href="#one" class="button next scrolly">Get Started</a></li>
-                </ul>
+            <div style="width: 100%; overflow-x: auto;background-color: #ffffff ; " >
+                <div class="table-wrapper">
+                    <table id="data-table" class="alt">
+                        <thead>
+                            <tr>
+                                <th>Sport</th>
+                                <th>Event Name</th>
+                                <th>Event Date</th>
+                                <th>BUCS PLAY Deadline</th>
+                                <th>Download ICalendar</th>
+                            </tr>
+                            <tr class="filters">
+                                <th><input type="text" placeholder="Filter Sport" /></th>
+                                <th><input type="text" placeholder="Filter Event Name" /></th>
+                                <th><input type="text" placeholder="Filter Event Date" /></th>
+                                <th><input type="text" placeholder="Filter BUCS PLAY Deadline" /></th>
+                                <th><input type="text" placeholder="Filter Download ICalendar" /></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Badminton</td>
+                                <td>BUCS Qualifier</td>
+                                <td>2026-02-12</td>
+                                <td>2026-02-05</td>
+                                <td><a href="#">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>Basketball</td>
+                                <td>BUCS Round 3</td>
+                                <td>2026-02-18</td>
+                                <td>2026-02-10</td>
+                                <td><a href="#">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>Cricket</td>
+                                <td>Indoor League Opener</td>
+                                <td>2026-02-22</td>
+                                <td>2026-02-14</td>
+                                <td><a href="#">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>Football</td>
+                                <td>South Division Matchday</td>
+                                <td>2026-03-02</td>
+                                <td>2026-02-24</td>
+                                <td><a href="#">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>Hockey</td>
+                                <td>BUCS Premier Fixture</td>
+                                <td>2026-03-05</td>
+                                <td>2026-02-27</td>
+                                <td><a href="#">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>Netball</td>
+                                <td>Conference Cup</td>
+                                <td>2026-03-09</td>
+                                <td>2026-03-01</td>
+                                <td><a href="#">Download</a></td>
+                            </tr>
+                        </tbody>
+                </div>
+            </div>
             </div>
         </div>
     </section>
 
-    <!-- Main -->
-    <div id="main">
 
-        <!-- One -->
-        {% include tiles.html %}
 
-        <!-- Two -->
-        <section id="two">
-            <div class="inner">
-                <header class="major">
-                    <h2>Massa libero</h2>
-                </header>
-                <p>{{ content }}</p>
-                <ul class="actions">
-                    <li><a href="landing.html" class="button next">Get Started</a></li>
-                </ul>
-            </div>
-        </section>
+    <script>
+        $(document).ready(function () {
+            const table = $("#data-table").DataTable({
+                orderCellsTop: true,
+                fixedHeader: true
+            });
 
-    </div>
+            $("#data-table thead tr.filters th").each(function (index) {
+                $("input", this).on("keyup change clear", function () {
+                    if (table.column(index).search() !== this.value) {
+                        table.column(index).search(this.value).draw();
+                    }
+                });
+            });
 
-    {% include footer.html %}
+            function adjustBannerHeight() {
+                const tableHeight = $("#data-table").outerHeight(true) || 0;
+                const targetHeight = Math.ceil(tableHeight * 1.6);
+                $("#banner").css("min-height", `${targetHeight}px`);
+            }
+
+            adjustBannerHeight();
+            table.on("draw", adjustBannerHeight);
+            $(window).on("resize", adjustBannerHeight);
+        });
+    </script>
 
 </body>
 
